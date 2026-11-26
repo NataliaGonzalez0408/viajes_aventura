@@ -1,10 +1,9 @@
 import getpass
-from services.authentication import create_user_by_admin
-from services.destination_service import create_destination, list_destinations
-from services.package_service import assign_destination_to_package, create_package, list_packages
-from services.permissions import require_admin
-from services.reservation_service import list_all_reservations, update_reservation_status
-
+from src.services.authentication import create_user_by_admin
+from src.services.destination_service import create_destination, list_destinations
+from src.services.package_service import assign_destination_to_package, create_package, list_packages
+from src.services.permissions import require_admin
+from src.services.reservation_service import list_all_reservations, update_reservation_status
 
 def show_admin_menu(session: dict):
     require_admin(session)

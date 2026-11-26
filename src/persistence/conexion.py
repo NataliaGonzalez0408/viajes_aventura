@@ -45,3 +45,14 @@ except Exception:
 finally:
     if connection:
         connection.close()
+        
+def get_connection():
+    """Alias compatibility wrapper for open_connection."""
+    conn = open_connection()
+    conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA foreign_keys = ON;")
+    return conn        
+
+def get_engine() -> str:
+    """Returns the database engine identifier ('sqlite' by default)."""
+    return "sqlite"

@@ -1,9 +1,10 @@
 import getpass
-from persistence.create_bd import create_tables
-from persistence.seed_bd import seed_data
-from menus.admin_menu import show_admin_menu
-from menus.client_menu import show_client_menu
-from services.authentication import authenticate, register_user
+
+from src.menus.admin_menu import show_admin_menu
+from src.menus.client_menu import show_client_menu
+from src.persistence.create_bd import create_tables
+from src.persistence.seed_bd import seed_data
+from src.services.authentication import authenticate, register_user
 
 
 def initialize_system():
@@ -74,7 +75,6 @@ def main():
             running = False
         else:
             print("Invalid option. Please try again.")
-
-
+            
 if __name__ == "__main__":
-    main()
+    main()            
