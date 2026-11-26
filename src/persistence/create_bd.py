@@ -1,6 +1,5 @@
 from persistence.conexion import open_connection
 
-
 def create_tables():
     connection = open_connection()
     cursor = connection.cursor()

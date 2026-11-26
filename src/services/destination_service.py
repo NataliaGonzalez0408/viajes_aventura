@@ -1,2 +1,1 @@
 def create_destination():
-    
