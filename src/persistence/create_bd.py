@@ -1,4 +1,5 @@
-from persistence.conexion import open_connection
+from src.persistence.conexion import open_connection
+
 
 def create_tables():
     connection = open_connection()
@@ -14,29 +15,43 @@ def create_tables():
                 email TEXT NOT NULL UNIQUE,
                 password_hash TEXT NOT NULL,
                 role TEXT NOT NULL
-            )
+            );
         """)
 
-    # 2. packages table
-    cursor.execute("""
-            CREATE TABLE IF NOT EXISTS packages (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                description TEXT NOT NULL,
-                price REAL NOT NULL
-            )
-        """)
-
-    # 3. destinations table
+    # 2. destinations table
     cursor.execute("""
             CREATE TABLE IF NOT EXISTS destinations (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
-                description TEXT NOT NULL
-            )
+                description TEXT NOT NULL,
+                base_cost REAL NOT NULL DEFAULT 0.0
+            );
         """)
 
-    # 4. reservations table
+    # 3. packages table
+    cursor.execute("""
+            CREATE TABLE IF NOT EXISTS packages (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                start_date TEXT NOT NULL,
+                end_date TEXT NOT NULL,
+                total_price REAL NOT NULL,
+                available_spots INTEGER NOT NULL
+            );
+        """)
+
+    # 4. package_destinations junction table
+    cursor.execute("""
+            CREATE TABLE IF NOT EXISTS package_destinations (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                package_id INTEGER NOT NULL,
+                destination_id INTEGER NOT NULL,
+                FOREIGN KEY (package_id) REFERENCES packages(id),
+                FOREIGN KEY (destination_id) REFERENCES destinations(id)
+            );
+        """)
+
+    # 5. reservations table
     cursor.execute("""
             CREATE TABLE IF NOT EXISTS reservations (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -44,22 +59,11 @@ def create_tables():
                 package_id INTEGER NOT NULL,
                 reservation_date TEXT NOT NULL,
                 status TEXT NOT NULL,
+                passenger_count INTEGER NOT NULL DEFAULT 1,
+                travel_stage TEXT NOT NULL DEFAULT 'pending',
                 FOREIGN KEY (user_id) REFERENCES users(id),
                 FOREIGN KEY (package_id) REFERENCES packages(id)
-            )
-        """)
-
-    # 5. package_destinations
-    cursor.execute("""
-            CREATE TABLE IF NOT EXISTS package_destinations (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                package_id INTEGER NOT NULL,
-                destination_id INTEGER NOT NULL,
-                start_date TEXT NOT NULL,
-                end_date TEXT NOT NULL,
-                FOREIGN KEY (package_id) REFERENCES packages(id),
-                FOREIGN KEY (destination_id) REFERENCES destinations(id)
-            )
+            );
         """)
 
     connection.commit()

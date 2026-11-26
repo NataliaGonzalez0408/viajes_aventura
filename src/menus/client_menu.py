@@ -1,6 +1,6 @@
-from services.package_service import get_package_details, list_packages
-from services.permissions import demand_session
-from services.reservation_service import cancel_my_reservation, create_reservation, list_reservations_by_user
+from src.services.package_service import get_package_details, list_packages
+from src.services.permissions import demand_session
+from src.services.reservation_service import cancel_my_reservation, create_reservation, list_reservations_by_user
 
 
 def show_client_menu(session: dict):

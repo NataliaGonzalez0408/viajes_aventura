@@ -1,8 +1,9 @@
 from dataclasses import dataclass
 from datetime import date
 
-from persistence.conexion import open_connection
-from services.permissions import require_admin
+from src.domain.reservations import Reservation
+from src.persistence.conexion import open_connection
+from src.services.permissions import require_admin
 
 VALID_STATUSES = ("pending", "confirmed", "cancelled")
 

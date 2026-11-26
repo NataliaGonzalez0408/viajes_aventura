@@ -1,9 +1,11 @@
 import bcrypt
-from domain.user import User
-from persistence.user_dao import UserDAO
-from services.permissions import require_admin
+
+from src.domain.users import User
+from src.persistence.users_dao import UsersDAO
+from src.services.permissions import require_admin
 
 MAX_BYTES_BCRYPT = 72
+
 
 def create_hash(password: str) -> str:
     password = User.validate_password(password)
@@ -21,7 +23,8 @@ def register_user(name: str, email: str, password: str) -> int:
         raise ValueError("User name cannot be empty.")
 
     normalized_email = User.normalize_email(email)
-    if UserDAO.find_by_email(normalized_email) is not None:
+    dao = UsersDAO()
+    if dao.get_by_email(normalized_email) is not None:
         raise ValueError("An account with this email already exists.")
 
     saved_hash = create_hash(password)
@@ -34,7 +37,7 @@ def register_user(name: str, email: str, password: str) -> int:
         role="client",
     )
 
-    saved_user = UserDAO.insert(user)
+    saved_user = dao.create(user)
     return saved_user.id
 
 
@@ -53,7 +56,8 @@ def create_user_by_admin(
         raise ValueError("User name cannot be empty.")
 
     normalized_email = User.normalize_email(email)
-    if UserDAO.find_by_email(normalized_email) is not None:
+    dao = UsersDAO()
+    if dao.get_by_email(normalized_email) is not None:
         raise ValueError(f"A user with email '{normalized_email}' already exists.")
 
     saved_hash = create_hash(password)
@@ -66,7 +70,7 @@ def create_user_by_admin(
         role=role,
     )
 
-    saved_user = UserDAO.insert(user)
+    saved_user = dao.create(user)
     return saved_user.id
 
 
@@ -79,7 +83,8 @@ def authenticate(email: str, password: str) -> dict | None:
     if not 0 < len(password_bytes) <= MAX_BYTES_BCRYPT:
         return None
 
-    account = UserDAO.find_by_email(normalized_email)
+    dao = UsersDAO()
+    account = dao.get_by_email(normalized_email)
     if account is None:
         return None
 
@@ -91,4 +96,4 @@ def authenticate(email: str, password: str) -> dict | None:
         "name": account.name,
         "email": account.email,
         "role": account.role,
-}
+    }
